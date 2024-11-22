@@ -7,8 +7,8 @@
 ----- Defines a custom entity class for ragmod ragdolls
 ----- Class is only recognized by the server, clients see the entity
 ----- as a prop_ragdoll
------ 
------ Fake SENT docs: 
+-----
+----- Fake SENT docs:
 ----- https://wiki.facepunch.com/gmod/Fake_Scripted_Entity_Creation
 ----------------------------------------------------------
 ---------------------
@@ -98,12 +98,12 @@ local HitGroupDamage = {
     [HITGROUP_HEAD] = 2,
 }
 
--- Gets the current possessing player. 
+-- Gets the current possessing player.
 function ENT:GetPossessor()
     return self:GetNWEntity("ragmod_Possessor", NULL)
 end
 
--- Gets the owner (origin) player of this ragdoll. 
+-- Gets the owner (origin) player of this ragdoll.
 function ENT:GetOwningPlayer()
     return self:GetNWEntity("ragmod_Owner", NULL)
 end
@@ -213,7 +213,7 @@ end
 -- Called on the server when the ragdoll is created but not yet spawned.
 -- Owner is not valid on the server
 -- Called on the client when it receives the networked entity.
--- Owner might already be valid on the client if the server has 
+-- Owner might already be valid on the client if the server has
 -- spawned the ragdoll and assigned an owner
 function ENT:Initialize()
     self.Ragmod_OwnerInitialized = false
@@ -621,11 +621,11 @@ function ENT:CopyOwnerPhysics()
         local bone = self:GetPhysicsObjectNum(i)
 
         if bone:IsValid() then
-            -- This gets the position and angles of the entity bone corresponding to the above physics bone  
+            -- This gets the position and angles of the entity bone corresponding to the above physics bone
             local bonepos = owner:GetBonePosition(self:TranslatePhysBoneToBone(i))
             local bonematrix = owner:GetBoneMatrix(self:TranslatePhysBoneToBone(i))
             local boneang = bonematrix:GetAngles()
-            -- All we need to do is set the bones position and angle  
+            -- All we need to do is set the bones position and angle
             bone:SetPos(bonepos)
             bone:SetAngles(boneang)
         end
@@ -659,7 +659,7 @@ end
 
 hook.Add("ShutDown", "ragmod_ragdoll_ShutDown", OnShutDown)
 
---------------------    
+--------------------
 -- Server methods --
 --------------------
 if SERVER then
@@ -718,7 +718,7 @@ if SERVER then
         if hook.Run("RM_CanGrab", self, limb.HookName, prop, physObjId) == false then return false end
         local forcelimit = RagModOptions.Limbs.ForceLimit()
         local weld = constraint.Weld(self, prop, limb.PhysObjId, physObjId, forcelimit, false, false)
-        if not weld then return false end
+        if not IsValid(weld) then return false end
 
         -- Success, update Grab table
         limb.Grab = {
@@ -1006,7 +1006,7 @@ end
 local super_tostring = BaseClass.__tostring
 
 function BaseClass:__tostring(...)
-    if ragmod:IsRagmodRagdoll(self) then
+    if IsValid(self) and ragmod:IsRagmodRagdoll(self) then
         return string.format("Entity [%d][%s]", self:EntIndex(), string.format("%s (RagMod)", self:GetClass()))
     else
         return super_tostring(self, ...)
